@@ -130,3 +130,6 @@ dmypy.json
 chatgpt_backend/api/static
 chatgpt_backend/static
 .DS_Store
+
+# SSL
+GPT.pem
