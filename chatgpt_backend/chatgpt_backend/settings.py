@@ -13,19 +13,20 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
-from decouple import config
+from dotenv import load_dotenv
+# load_dotenv('../.envs/.env')
+load_dotenv('../.envs/.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = config('DEBUG', default=False, cast=bool)
-SECRET_KEY = config(
+DEBUG = os.environ.get('DEBUG', default=False)
+SECRET_KEY = os.environ.get(
     'SECRET_KEY', default='django-insecure-_6fm0c_&b3pg(h9@xwc+3h7dfv-m0o*ili$@xh=vgfy+ovusf*')
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*',
-                       cast=lambda v: [s.strip() for s in v.split(',')])
+allowed_hosts_string = os.environ.get('ALLOWED_HOSTS', default='*')
+ALLOWED_HOSTS = allowed_hosts_string.split(',')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -79,11 +80,11 @@ WSGI_APPLICATION = 'chatgpt_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('POSTGRES_DB'),
-        'USER': config('POSTGRES_USER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
-        'HOST': config('POSTGRES_HOST'),
-        'PORT': config('POSTGRES_PORT', default='5432'),
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT', default='5432'),
     }
 }
 

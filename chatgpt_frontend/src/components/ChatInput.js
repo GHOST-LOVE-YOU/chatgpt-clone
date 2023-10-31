@@ -3,7 +3,6 @@ import React from "react";
 // import send icon from react-icons/fa
 import { FaPaperPlane } from "react-icons/fa";
 
-
 const ChatInput = ({ inputMessage, setInputMessage, sendMessage }) => {
   return (
     <div className="chat-input">
@@ -17,12 +16,12 @@ const ChatInput = ({ inputMessage, setInputMessage, sendMessage }) => {
             if (inputMessage) {
               sendMessage();
             }
-          }          
+          }
         }}
       />
 
       <button onClick={sendMessage} disabled={!inputMessage}>
-        <FaPaperPlane/>
+        <FaPaperPlane />
       </button>
     </div>
   );

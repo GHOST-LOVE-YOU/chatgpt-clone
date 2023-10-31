@@ -1,6 +1,6 @@
 # 🤖 Self Hosted ChatGPT Clone
 
-ChatGPT Clone: Self Hosted, Full-Stack Conversational AI Platform powered by React, Django REST Framework, and PostgreSQL and OpenAI's GPT-3.5 API. Most of the code is written by [GPT-4 model](https://openai.com/product/gpt-4). 
+ChatGPT Clone: Self Hosted, Full-Stack Conversational AI Platform powered by React, Django REST Framework, and PostgreSQL and OpenAI's GPT-3.5 API. Most of the code is written by [GPT-4 model](https://openai.com/product/gpt-4).
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/fatihbaltaci/chatgpt-clone/main/assets/chatgpt_clone_overview.png" alt="ChatGPT Clone - It uses GPT-3.5 to generate responses to messages." />
@@ -25,7 +25,6 @@ ChatGPT Clone: Self Hosted, Full-Stack Conversational AI Platform powered by Rea
 - **Docker Compose**: The project uses Docker Compose to run the project in containers.
 - **Django Admin Panel**: The project includes a Django Admin Panel to manage the project.
 - **Supported OS**: The project is tested on Ubuntu and MacOS.
-
 
 ## 🛠 Prerequisites
 
@@ -89,6 +88,7 @@ docker volume rm chatgpt-clone_postgres
 ## 🛠 Development (Contributing)
 
 If you want to contribute to this project, you can follow the instructions below to set up a development environment.
+
 ## Backend
 
 ### Create Postgres
@@ -106,7 +106,6 @@ docker run -d --name chatgptpostgres \
     -v $HOME/BACKUP/chatgptpostgres:/var/lib/postgresql/data \
     postgres:$POSTGRES_VERSION
 ```
-
 
 ### Installation
 
@@ -155,10 +154,9 @@ cd chatgpt_frontend
 npm start
 ```
 
-
 ## 🐛 Known Issues
 
-If you get `Error: pg_config executable not found.` when running `pip install -r requirements.txt`, you must install  PostgreSQL development libraries on your system. 
+If you get `Error: pg_config executable not found.` when running `pip install -r requirements.txt`, you must install PostgreSQL development libraries on your system.
 
 On MacOS, you can install them with Homebrew:
 

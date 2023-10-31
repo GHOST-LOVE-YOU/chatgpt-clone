@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { FaGithub } from "react-icons/fa";
-
-import "./App.css";
+import { Container, Typography, Box, CircularProgress } from "@mui/material";
 import ChatHistory from "./components/ChatHistory";
 import ChatUI from "./components/ChatUI";
 
 const baseURL =
-  process.env.REACT_APP_BACKEND_URL || "http://localhost:8090/api";
+  // process.env.REACT_APP_BACKEND_URL ||
+  "http://127.0.0.1:8000/api";
 
 function App() {
   const [chats, setChats] = useState([]);
@@ -65,7 +64,6 @@ function App() {
       },
     ]);
     setInputMessage("");
-
     setIsAssistantTyping(true);
 
     try {
@@ -116,61 +114,37 @@ function App() {
     }
   };
 
-  function formatMessageContent(content) {
-    const sections = content.split(/(```[\s\S]*?```|`[\s\S]*?`)/g);
-    return sections
-      .map((section) => {
-        if (section.startsWith("```") && section.endsWith("```")) {
-          section = section.split("\n").slice(1).join("\n");
-          const code = section.substring(0, section.length - 3);
-          return `<pre><code class="code-block">${code}</code></pre>`;
-        } else if (section.startsWith("`") && section.endsWith("`")) {
-          const code = section.substring(1, section.length - 1);
-          return `<code class="inline-code">${code}</code>`;
-        } else {
-          return section.replace(/\n/g, "<br>");
-        }
-      })
-      .join("");
-  }
+  const AssistantTypingIndicator = () => (
+    <Box display="flex" flexDirection="row" alignItems="center">
+      <Box m={1}>{/* You can use an avatar here */}</Box>
+      <Box m={1}>
+        <CircularProgress size={20} />
+      </Box>
+    </Box>
+  );
 
   return (
-    <div className="App">
-      <div className="headline">
-        <h1>⚡ ChatGPT Clone ⚡</h1>
-      </div>
-      <div className="chat-container">
-        <div className="chat-history-container">
-          <button className="new-chat-button" onClick={createNewChat}>
-            <strong>+ New Chat</strong>
-          </button>
-          <ChatHistory
-            chats={chats}
-            selectedChatId={selectedChatId}
-            setSelectedChatId={setSelectedChatId}
-          />
-        </div>
-        <ChatUI
-          messages={messages}
-          inputMessage={inputMessage}
-          setInputMessage={setInputMessage}
-          sendMessage={sendMessage}
-          formatMessageContent={formatMessageContent}
-          isAssistantTyping={isAssistantTyping}
-          messagesEndRef={messagesEndRef}
+    <Box display="flex" height="100vh">
+      <Box minWidth={255} maxWidth={255} overflowY="auto">
+        <ChatHistory
+          {...{ chats, selectedChatId, setSelectedChatId, createNewChat }}
         />
-      </div>
-      <div className="footer">
-        <a
-          href="https://github.com/fatihbaltaci/chatgpt-clone"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <FaGithub className="icon" />
-          View on GitHub
-        </a>
-      </div>
-    </div>
+      </Box>
+      <Box flexGrow={1}>
+        <ChatUI
+          {...{
+            messages,
+            inputMessage,
+            setInputMessage,
+            sendMessage,
+            isAssistantTyping,
+            messagesEndRef,
+          }}
+        />
+        {isAssistantTyping && <AssistantTypingIndicator />}{" "}
+        {/* Display the typing indicator when the assistant is typing */}
+      </Box>
+    </Box>
   );
 }
 

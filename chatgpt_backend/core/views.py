@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import openai
 import os
+import requests
 
 from .models import Chat, Message
 from .serializers import (
@@ -12,7 +13,13 @@ from .serializers import (
     ChatSerializer,
 )
 
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+from dotenv import load_dotenv
+# load_dotenv('../.envs/.env')
+load_dotenv('../.envs/.env')
+
+# openai.api_key = os.environ.get("OPENAI_API_KEY")
+AIPROXY_API_KEY = os.environ.get("AIPROXY_API_KEY")
+AIPROXY_ENDPOINT = "https://api.aiproxy.io/v1/chat/completions"
 
 class ChatGPT(APIView):
     def post(self, request, format=None):
@@ -41,21 +48,86 @@ class ChatGPT(APIView):
 
             message_list.append({"role": "user", "content": request_message})
 
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=message_list
-            )
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {AIPROXY_API_KEY}"
+            }
 
-            ai_message = response.choices[0].message['content'].strip()
+            data = {
+                "model": "gpt-4",
+                "messages": message_list,
+                "temperature": 0.7,
+                # Add any other parameters you need
+            }
 
-            ai_message_obj = Message(content=ai_message, role=Message.RoleChoices.ASSISTANT, chat=chat)
-            ai_message_obj.save()
+            response = requests.post(AIPROXY_ENDPOINT, headers=headers, json=data)
 
-            response_serializer = ChatResponseSerializer(data={"message": ai_message})
-            if response_serializer.is_valid():
-                return Response({"message": response_serializer.validated_data["message"], "chat_id": chat.id})
+            if response.status_code == 200:
+                ai_message = response.json()["choices"][0]["message"]["content"].strip()
+
+                ai_message_obj = Message(content=ai_message, role=Message.RoleChoices.ASSISTANT, chat=chat)
+                ai_message_obj.save()
+
+                response_serializer = ChatResponseSerializer(data={"message": ai_message})
+                if response_serializer.is_valid():
+                    return Response({"message": response_serializer.validated_data["message"], "chat_id": chat.id})
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# curl https://api.aiproxy.io/v1/chat/completions \
+#   -H "Content-Type: application/json" \
+#   -H "Authorization: Bearer $AIPROXY_API_KEY" \
+#   -d '{
+#      "model": "gpt-",
+#      "messages": [{"role": "user", "content": "你好，很高兴遇见你!"}],
+#      "temperature": 0.7,
+#      "session_id": "abcdef",
+#      "session_limit": 2
+#    }'
+
+# class ChatGPT(APIView):
+#     def post(self, request, format=None):
+#         serializer = ChatMessageSerializer(data=request.data)
+#         if serializer.is_valid():
+#             request_message = serializer.validated_data.get('message', None)
+#             chat_id = serializer.validated_data.get('chat_id', None)
+
+#             if chat_id:
+#                 chat = Chat.objects.get(id=chat_id)
+#             else:
+#                 chat = Chat.objects.create()
+
+#             if not request_message:
+#                 serializer = ChatSerializer(chat)
+#                 return Response(serializer.data)
+            
+#             user_message_obj = Message(content=request_message, role=Message.RoleChoices.USER, chat=chat)
+#             user_message_obj.save()
+
+#             messages = Message.objects.filter(chat=chat).order_by('timestamp')
+#             message_list = []
+#             for message in messages:
+#                 role = message.role
+#                 message_list.append({"role": role, "content": message.content})
+
+#             message_list.append({"role": "user", "content": request_message})
+
+#             response = openai.ChatCompletion.create(
+#                 model="gpt-3.5-turbo",
+#                 messages=message_list
+#             )
+
+#             ai_message = response.choices[0].message['content'].strip()
+
+#             ai_message_obj = Message(content=ai_message, role=Message.RoleChoices.ASSISTANT, chat=chat)
+#             ai_message_obj.save()
+
+#             response_serializer = ChatResponseSerializer(data={"message": ai_message})
+#             if response_serializer.is_valid():
+#                 return Response({"message": response_serializer.validated_data["message"], "chat_id": chat.id})
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, chat_id=None, format=None):
         if chat_id:
