@@ -16,6 +16,8 @@ import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import TextareaAutosize from 'react-textarea-autosize';
+
 
 // 一键复制代码块
 const CodeBlock = ({ language, value }) => {
@@ -105,15 +107,21 @@ const components = {
         {...props}
       />
     ) : (
-      <code className={className} {...props}>
+      <code
+        className={className}
+        {...props}
+        style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+      >
         {children}
       </code>
     );
   },
 };
+
 const assistantAvatar = "/path_to_your_assistant_avatar_image"; // update this path
 const userAvatar = "/path_to_your_user_avatar_image"; // update this path
 
+// 消息气泡
 const MessageBubble = ({ message }) => (
   <Box
     display="flex"
@@ -165,7 +173,13 @@ const MessageBubble = ({ message }) => (
 
 const ChatUI = ({ messages, inputMessage, setInputMessage, sendMessage }) => {
   return (
-    <Box display="flex" flexDirection="column" height="96vh" p={0} ml={0}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      p={0}
+      ml={0}
+      height="calc(98vh + 4px)"
+    >
       <Box flexGrow={1} overflow="auto">
         {messages && messages.length > 0 ? (
           messages.map((message) => (
@@ -176,8 +190,64 @@ const ChatUI = ({ messages, inputMessage, setInputMessage, sendMessage }) => {
             No messages yet.
           </Box>
         )}
+        <Box
+          pl={0}
+          pr={0}
+          pb={"1px"}
+          pt={"1px"}
+          borderRadius={0}
+          bgcolor="#343541" // 使用您的背景色
+          color="white"
+          style={{
+            maxWidth: "100%", // 控制空白气泡的宽度
+            height: "80px", // 控制空白气泡的高度
+            alignSelf: "flex-start",
+            overflow: "hidden",
+          }}
+        />
       </Box>
+
       <Box
+        position="absolute"
+        bottom={20} // 您可以调整这个值以改变输入框的垂直位置
+        left="35%"
+        right="20%"
+        transform="translateX(-50%)"
+      >
+        <TextareaAutosize
+  maxRows={3}
+  value={inputMessage}
+  onChange={(e) => setInputMessage(e.target.value)}
+  placeholder="Type a message"
+  style={{ 
+    width: '100%',
+    padding: '15px',
+    boxSizing: 'border-box',
+    overflow: "auto", 
+    backgroundColor: "#40414F",
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    resize: 'none',
+    boxShadow: '0px 0px 50px rgba(0.8, 0.8, 0.8, 0.8)', // 添加阴影
+    color: 'white',                 // 设置字体颜色为白色
+    fontSize: '16px',              // 增加字体大小
+    scrollbarWidth: 'none',       // 针对火狐浏览器隐藏滚动条
+    msOverflowStyle: 'none',      // 针对IE和Edge隐藏滚动条
+    "&::-webkit-scrollbar": {     // 针对webkit浏览器隐藏滚动条
+      display: 'none'
+    }
+  }}
+  onKeyPress={(e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }}
+/>
+
+      </Box>
+
+      {/* <Box
         borderTop={1}
         borderColor="divider"
         pt={2}
@@ -209,8 +279,8 @@ const ChatUI = ({ messages, inputMessage, setInputMessage, sendMessage }) => {
         >
           <SendIcon />
         </IconButton>
-      </Box>
-      <Grid
+      </Box> */}
+      {/* <Grid
         container
         justifyContent="center"
         alignItems="center"
@@ -232,7 +302,7 @@ const ChatUI = ({ messages, inputMessage, setInputMessage, sendMessage }) => {
           <GitHubIcon sx={{ marginRight: 1 }} />
           View on GitHub
         </Link>
-      </Grid>
+      </Grid> */}
     </Box>
   );
 };

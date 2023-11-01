@@ -133,3 +133,6 @@ chatgpt_backend/static
 
 # SSL
 GPT.pem
+
+# .envs
+.envs/

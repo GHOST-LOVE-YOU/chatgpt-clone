@@ -10,7 +10,8 @@ const ChatHistory = ({
 }) => {
   return (
     <Box
-      marginBottom="5px"
+      marginBottom="8px"
+      height="100vh"
       sx={{
         backgroundColor: "#202123", // 设置 ChatHistory 的背景为黑色
       }}
@@ -43,7 +44,7 @@ const ChatHistory = ({
         </Box>
       </Button>
       <Box
-        height="calc(98vh - 35px)"
+        height="calc(94vh - 30px)"
         overflow="auto"
         sx={{
           "&:not(:hover)": {

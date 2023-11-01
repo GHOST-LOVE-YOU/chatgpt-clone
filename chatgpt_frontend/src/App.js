@@ -124,8 +124,8 @@ function App() {
   );
 
   return (
-    <Box display="flex" height="100vh">
-      <Box minWidth={255} maxWidth={255} overflowY="auto">
+    <Box display="flex" height="calc(99vh + 10px)" overflowY="hidden" backgroundColor="#343541">
+      <Box minWidth={255} maxWidth={255} overflowY="auto" >
         <ChatHistory
           {...{ chats, selectedChatId, setSelectedChatId, createNewChat }}
         />
