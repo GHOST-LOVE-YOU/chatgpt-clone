@@ -88,9 +88,9 @@ class ChatGPT(APIView):
 
 # curl https://api.aiproxy.io/v1/chat/completions \
 #   -H "Content-Type: application/json" \
-#   -H "Authorization: Bearer $AIPROXY_API_KEY" \
+#   -H "Authorization: Bearer mk-DDnnl4qohcHHOyXHU40xVo4LC3QFVbSJaSAtHsPp6KuKLEuh" \
 #   -d '{
-#      "model": "gpt-",
+#      "model": "gpt-4",
 #      "messages": [{"role": "user", "content": "你好，很高兴遇见你!"}],
 #      "temperature": 0.7,
 #      "session_id": "abcdef",
