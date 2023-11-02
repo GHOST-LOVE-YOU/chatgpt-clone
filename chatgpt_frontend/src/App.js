@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Container, Typography, Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import ChatHistory from "./components/ChatHistory";
 import ChatUI from "./components/ChatUI";
+import Settings from "./components/Settings";
 
 const baseURL =
   // process.env.REACT_APP_BACKEND_URL ||
@@ -15,6 +16,11 @@ function App() {
   const [inputMessage, setInputMessage] = useState("");
   const messagesEndRef = useRef(null);
   const [isAssistantTyping, setIsAssistantTyping] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedApi, setSelectedApi] = useState("aiproxy");
+  const [selectedModel, setSelectedModel] = useState("GPT-4");
+  const [dialogApi, setDialogApi] = useState(selectedApi);
+  const [dialogModel, setDialogModel] = useState(selectedModel);
 
   useEffect(() => {
     fetchChats();
@@ -31,6 +37,31 @@ function App() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleDialogOpen = () => {
+    setDialogApi(selectedApi);
+    setDialogModel(selectedModel);
+    setOpenDialog(true);
+  };
+
+  const handleApiChange = (event) => {
+    setDialogApi(event.target.value);
+    setDialogModel(""); // Reset model selection when API changes
+  };
+
+  const handleModelChange = (event) => {
+    setDialogModel(event.target.value);
+  };
+
+  const handleSave = () => {
+    setSelectedApi(dialogApi);
+    setSelectedModel(dialogModel);
+    setOpenDialog(false);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
@@ -74,6 +105,8 @@ function App() {
           const response = await axios.post(`${baseURL}/chats/`, {
             chat_id: selectedChatId || undefined,
             message: inputMessage,
+            api: selectedApi,
+            model: selectedModel,
           });
 
           // If there was no selected chat, set the selected chat to the newly created one
@@ -116,7 +149,6 @@ function App() {
 
   const AssistantTypingIndicator = () => (
     <Box display="flex" flexDirection="row" alignItems="center">
-      <Box m={1}>{/* You can use an avatar here */}</Box>
       <Box m={1}>
         <CircularProgress size={20} />
       </Box>
@@ -124,10 +156,21 @@ function App() {
   );
 
   return (
-    <Box display="flex" height="calc(99vh + 10px)" overflowY="hidden" backgroundColor="#343541">
-      <Box minWidth={255} maxWidth={255} overflowY="auto" >
+    <Box
+      display="flex"
+      height="calc(99vh + 10px)"
+      overflowY="hidden"
+      backgroundColor="#343541"
+    >
+      <Box minWidth={255} maxWidth={255} overflowY="auto">
         <ChatHistory
-          {...{ chats, selectedChatId, setSelectedChatId, createNewChat }}
+          {...{
+            chats,
+            selectedChatId,
+            setSelectedChatId,
+            createNewChat,
+            handleDialogOpen,
+          }}
         />
       </Box>
       <Box flexGrow={1}>
@@ -144,6 +187,18 @@ function App() {
         {isAssistantTyping && <AssistantTypingIndicator />}{" "}
         {/* Display the typing indicator when the assistant is typing */}
       </Box>
+      <Settings
+        {...{
+          openDialog,
+          handleDialogClose,
+          dialogApi,
+          dialogModel,
+          handleApiChange,
+          handleModelChange,
+          handleSave,
+          selectedApi,
+        }}
+      />
     </Box>
   );
 }

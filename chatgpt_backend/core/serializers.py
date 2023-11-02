@@ -14,6 +14,8 @@ class MessageSerializer(serializers.ModelSerializer):
 class ChatMessageSerializer(serializers.Serializer):
     chat_id = serializers.UUIDField(required=False)
     message = serializers.CharField(required=False)
+    api = serializers.CharField(required=False)
+    model = serializers.CharField(required=False)
 
 
 class ChatResponseSerializer(serializers.Serializer):

@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import {
   Box,
-  TextField,
   IconButton,
   Avatar,
-  Button,
   Container,
   Link,
-  Grid,
+  Card,
+  Typography,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import ReactMarkdown from "react-markdown";
@@ -16,13 +15,11 @@ import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import TextareaAutosize from 'react-textarea-autosize';
-
+import TextareaAutosize from "react-textarea-autosize";
 
 // 一键复制代码块
 const CodeBlock = ({ language, value }) => {
   const [isCopied, setIsCopied] = useState(false);
-
   const codeBlockStyles = {
     backgroundColor: "black",
     borderTopLeftRadius: "4px",
@@ -118,7 +115,8 @@ const components = {
   },
 };
 
-const assistantAvatar = "/path_to_your_assistant_avatar_image"; // update this path
+const assistantAvatar =
+  "https://cdn.oaistatic.com/_next/static/media/apple-touch-icon.59f2e898.png"; // update this path
 const userAvatar = "/path_to_your_user_avatar_image"; // update this path
 
 // 消息气泡
@@ -178,7 +176,7 @@ const ChatUI = ({ messages, inputMessage, setInputMessage, sendMessage }) => {
       flexDirection="column"
       p={0}
       ml={0}
-      height="calc(98vh + 4px)"
+      height="calc(99vh + 8px)"
     >
       <Box flexGrow={1} overflow="auto">
         {messages && messages.length > 0 ? (
@@ -186,8 +184,28 @@ const ChatUI = ({ messages, inputMessage, setInputMessage, sendMessage }) => {
             <MessageBubble key={message.id} message={message} />
           ))
         ) : (
-          <Box textAlign="center" my={2}>
-            No messages yet.
+          <Box
+            display="flex" // 设置为flex布局
+            alignItems="center" // 垂直居中对齐内容
+            justifyContent="center" // 水平居中对齐内容
+            my={30}
+            fontSize={50}
+            color="whitesmoke"
+          >
+            chatGPT
+            {/* 将Card与文本稍微分开，可以通过增加marginLeft实现 */}
+            <Card
+              sx={{
+                maxWidth: 70,
+                background: "#FAE69E",
+                marginLeft: 1,
+                marginBottom: 1,
+              }}
+            >
+              <Typography variant="h6" component="div" color="#927201">
+                PLUS
+              </Typography>
+            </Card>
           </Box>
         )}
         <Box
@@ -196,7 +214,7 @@ const ChatUI = ({ messages, inputMessage, setInputMessage, sendMessage }) => {
           pb={"1px"}
           pt={"1px"}
           borderRadius={0}
-          bgcolor="#343541" // 使用您的背景色
+          bgcolor="#343541" // 使用自定义背景色
           color="white"
           style={{
             maxWidth: "100%", // 控制空白气泡的宽度
@@ -206,103 +224,95 @@ const ChatUI = ({ messages, inputMessage, setInputMessage, sendMessage }) => {
           }}
         />
       </Box>
-
       <Box
         position="absolute"
-        bottom={20} // 您可以调整这个值以改变输入框的垂直位置
+        bottom={30}
         left="35%"
         right="20%"
         transform="translateX(-50%)"
-      >
-        <TextareaAutosize
-  maxRows={3}
-  value={inputMessage}
-  onChange={(e) => setInputMessage(e.target.value)}
-  placeholder="Type a message"
-  style={{ 
-    width: '100%',
-    padding: '15px',
-    boxSizing: 'border-box',
-    overflow: "auto", 
-    backgroundColor: "#40414F",
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    resize: 'none',
-    boxShadow: '0px 0px 50px rgba(0.8, 0.8, 0.8, 0.8)', // 添加阴影
-    color: 'white',                 // 设置字体颜色为白色
-    fontSize: '16px',              // 增加字体大小
-    scrollbarWidth: 'none',       // 针对火狐浏览器隐藏滚动条
-    msOverflowStyle: 'none',      // 针对IE和Edge隐藏滚动条
-    "&::-webkit-scrollbar": {     // 针对webkit浏览器隐藏滚动条
-      display: 'none'
-    }
-  }}
-  onKeyPress={(e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }}
-/>
-
-      </Box>
-
-      {/* <Box
-        borderTop={1}
-        borderColor="divider"
-        pt={2}
-        mt={2}
         display="flex"
         alignItems="center"
-        margin={5}
       >
-        <TextField
-          fullWidth
-          variant="outlined"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          placeholder="Type a message"
-          multiline
-          style={{ maxHeight: "100px", overflow: "auto" }}
-          onKeyPress={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
-          inputProps={{ wrap: "hard" }}
-        />
-        <IconButton
-          color="primary"
-          onClick={sendMessage}
-          disabled={!inputMessage}
-        >
-          <SendIcon />
-        </IconButton>
-      </Box> */}
-      {/* <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        className="footer"
-        sx={{
-          minHeight: "100px",
-          margin: -8, // 取消上下间距
-        }}
+        <div style={{ position: "relative", flex: 1 }}>
+          {" "}
+          {/* 新增的父容器 */}
+          <TextareaAutosize
+            maxRows={3}
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder="Type a message"
+            style={{
+              width: "100%",
+              padding: "15px",
+              paddingRight: "70px", // 增加右边距来容纳按钮
+              boxSizing: "border-box",
+              overflow: "auto",
+              backgroundColor: "#40414F",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              resize: "none",
+              boxShadow: "0px 0px 30px rgba(0.8, 0.8, 0.8, 0.8)",
+              color: "white",
+              fontSize: "16px",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              outline: "none", // 移除轮廓线
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
+              "&:focus": {
+                boxShadow: "none", // 如果需要，还可以移除可能存在的阴影
+                border: "1px solid #ccc", // 保持边框颜色一致
+              },
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
+          />
+          {/* 调整后的发送按钮 */}
+          <button
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              backgroundColor: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "16px",
+              transition: "opacity 0.3s",
+              outline: "none", // 去除按钮点击后的轮廓线
+            }}
+            onMouseOver={(e) => (e.target.style.opacity = "0.7")}
+            onMouseOut={(e) => (e.target.style.opacity = "1")}
+            onClick={sendMessage}
+          >
+            <SendIcon style={{ color: "white" }} />
+          </button>
+        </div>
+      </Box>
+      <Typography
+        variant="body2"
+        color="whitesmoke"
+        style={{ marginTop: "3px", marginBottom: "3px", textAlign: "center" }}
       >
         <Link
-          href="https://github.com/fatihbaltaci/chatgpt-clone"
+          href="https://github.com/GHOST-LOVE-YOU/chatgpt-clone/tree/GHOST"
           target="_blank"
           rel="noopener noreferrer"
-          color="primary"
+          color="GrayText"
           underline="none"
-          display="flex"
           alignItems="center"
         >
-          <GitHubIcon sx={{ marginRight: 1 }} />
-          View on GitHub
+          <GitHubIcon sx={{ marginRight: "3px", marginTop: 1, fontSize: 18 }} />
+          <span style={{ position: "relative", top: "-2px" }}>
+            View on GitHub
+          </span>
         </Link>
-      </Grid> */}
+      </Typography>
     </Box>
   );
 };

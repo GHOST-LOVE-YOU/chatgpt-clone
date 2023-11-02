@@ -14,11 +14,11 @@ from .serializers import (
 )
 
 from dotenv import load_dotenv
-# load_dotenv('../.envs/.env')
 load_dotenv('../.envs/.env')
 
-# openai.api_key = os.environ.get("OPENAI_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 AIPROXY_API_KEY = os.environ.get("AIPROXY_API_KEY")
+OPENAI_ENDPOINT = "	https://api.openai.com/v1/chat/completions"
 AIPROXY_ENDPOINT = "https://api.aiproxy.io/v1/chat/completions"
 
 class ChatGPT(APIView):
@@ -27,6 +27,8 @@ class ChatGPT(APIView):
         if serializer.is_valid():
             request_message = serializer.validated_data.get('message', None)
             chat_id = serializer.validated_data.get('chat_id', None)
+            api = serializer.validated_data.get('api', None)
+            model = serializer.validated_data.get('model', None)
 
             if chat_id:
                 chat = Chat.objects.get(id=chat_id)
@@ -48,10 +50,16 @@ class ChatGPT(APIView):
 
             message_list.append({"role": "user", "content": request_message})
 
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {AIPROXY_API_KEY}"
-            }
+            if api == "openai":
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {OPENAI_API_KEY}"
+                }
+            else:
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {AIPROXY_API_KEY}"
+                }
 
             data = {
                 "model": "gpt-4",
@@ -60,7 +68,10 @@ class ChatGPT(APIView):
                 # Add any other parameters you need
             }
 
-            response = requests.post(AIPROXY_ENDPOINT, headers=headers, json=data)
+            if api == "openai":
+                response = requests.post(OPENAI_ENDPOINT, headers=headers, json=data)
+            else:
+                response = requests.post(AIPROXY_ENDPOINT, headers=headers, json=data)
 
             if response.status_code == 200:
                 ai_message = response.json()["choices"][0]["message"]["content"].strip()
