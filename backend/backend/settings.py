@@ -14,13 +14,12 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-# load_dotenv('../.envs/.env')
 load_dotenv('../.envs/.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = os.environ.get('DEBUG', default=False)
+DEBUG = os.environ.get('DEBUG', default=True)
 SECRET_KEY = os.environ.get(
     'SECRET_KEY', default='django-insecure-_6fm0c_&b3pg(h9@xwc+3h7dfv-m0o*ili$@xh=vgfy+ovusf*')
 allowed_hosts_string = os.environ.get('ALLOWED_HOSTS', default='*')
@@ -53,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'chatgpt_backend.urls'
+ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
     {
@@ -71,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'chatgpt_backend.wsgi.application'
+WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 # Database
