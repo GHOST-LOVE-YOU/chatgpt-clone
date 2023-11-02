@@ -135,4 +135,4 @@ chatgpt_backend/static
 GPT.pem
 
 # .envs
-.envs/
+.env

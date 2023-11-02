@@ -14,7 +14,7 @@ from .serializers import (
 )
 
 from dotenv import load_dotenv
-load_dotenv('../.envs/.env')
+load_dotenv('../.env')
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 AIPROXY_API_KEY = os.environ.get("AIPROXY_API_KEY")
